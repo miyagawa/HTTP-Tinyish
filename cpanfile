@@ -1,5 +1,6 @@
 requires 'perl', '5.008005';
 
+requires 'File::Which';
 requires 'IPC::Run3';
 requires 'HTTP::Tiny', 0.054;
 

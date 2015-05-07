@@ -13,8 +13,10 @@ sub read_file {
 }
 
 for my $backend ( @HTTP::Tinyish::Backends ) {
-    diag "Testing with $backend";
     $HTTP::Tinyish::PreferredBackend = $backend;
+    HTTP::Tinyish->configure_backend($backend) or next;
+
+    diag "Testing with $backend";
 
     my $res = HTTP::Tinyish->new->get("http://www.cpan.org");
     is $res->{status}, 200;

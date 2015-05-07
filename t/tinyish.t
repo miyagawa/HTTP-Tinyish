@@ -14,15 +14,15 @@ sub read_file {
 
 for my $backend ( @HTTP::Tinyish::Backends ) {
     $HTTP::Tinyish::PreferredBackend = $backend;
-    HTTP::Tinyish->configure_backend($backend) or next;
-
+    HTTP::Tinyish->configure_backend($backend) && $backend->supports('http') or next;
     diag "Testing with $backend";
 
     my $res = HTTP::Tinyish->new->get("http://www.cpan.org");
     is $res->{status}, 200;
     like $res->{content}, qr/Comprehensive/;
 
-    if ($backend->supports('https')) {
+ SKIP: {
+        skip "HTTPS is not supported with $backend", 2 unless $backend->supports('https');
         $res = HTTP::Tinyish->new->get("https://cpan.metacpan.org");
         is $res->{status}, 200;
         like $res->{content}, qr/Comprehensive/;

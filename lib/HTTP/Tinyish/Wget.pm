@@ -22,6 +22,7 @@ sub configure {
 
         run3([$wget, @options, 'https://'], \undef, \my $out, \my $err);
 
+        # TODO requires 1.12 for server-response with quiet support?
         if ($err && $err =~ /HTTPS support not compiled/) {
             $supports{http} = 1;
         } elsif ($err && $err =~ /Invalid host/) {

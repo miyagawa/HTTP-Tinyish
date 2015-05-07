@@ -5,6 +5,7 @@ requires 'HTTP::Tiny', 0.054;
 
 on test => sub {
     requires 'Test::More', '0.96';
+    requires 'JSON::PP';
 };
 
 on develop => sub {

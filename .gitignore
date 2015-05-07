@@ -1,0 +1,7 @@
+/HTTP-Tinyish-*
+/.build
+/_build*
+/Build
+MYMETA.*
+!META.json
+/.prove

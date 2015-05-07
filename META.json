@@ -26,19 +26,22 @@
    "prereqs" : {
       "configure" : {
          "requires" : {
-            "Module::Build::Tiny" : "0.039"
+            "ExtUtils::MakeMaker" : "0"
          }
       },
       "develop" : {
          "requires" : {
             "Dist::Milla" : "v1.0.15",
+            "IO::Socket::SSL" : "1.42",
             "LWP" : "6",
             "LWP::Protocol::https" : "6",
+            "Net::SSLeay" : "1.49",
             "Test::Pod" : "1.41"
          }
       },
       "runtime" : {
          "requires" : {
+            "File::Which" : "0",
             "HTTP::Tiny" : "0.054",
             "IPC::Run3" : "0",
             "perl" : "5.008005"
@@ -46,6 +49,7 @@
       },
       "test" : {
          "requires" : {
+            "JSON::PP" : "0",
             "Test::More" : "0.96"
          }
       }

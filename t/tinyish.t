@@ -28,6 +28,11 @@ for my $backend ( @HTTP::Tinyish::Backends ) {
         like $res->{content}, qr/Comprehensive/;
     }
 
+    $res = HTTP::Tinyish->new(default_headers => { Dnt => "1" })
+      ->get("http://httpbin.org/headers", { headers => { "Foo" => "Bar Baz" } });
+    is decode_json($res->{content})->{headers}{Foo}, "Bar Baz";
+    is decode_json($res->{content})->{headers}{Dnt}, "1";
+
     my $fn = tempdir(CLEANUP => 1) . "/index.html";
     $res = HTTP::Tinyish->new->mirror("http://www.cpan.org", $fn);
     is $res->{status}, 200;

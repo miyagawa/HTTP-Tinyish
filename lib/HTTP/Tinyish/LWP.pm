@@ -42,8 +42,17 @@ sub _headers_to_hashref {
 }
 
 sub get {
-    my($self, $url) = @_;
-    my $res = $self->{ua}->request(HTTP::Request->new(GET => $url));
+    my($self, $url, $opts) = @_;
+    $opts ||= {};
+
+    my $req = HTTP::Request->new(GET => $url);
+
+    if ($opts->{headers}) {
+        $req->header(%{$opts->{headers}});
+    }
+
+    my $res = $self->{ua}->request($req);
+
     return {
         url     => $url,
         content => $res->decoded_content,
@@ -75,7 +84,15 @@ sub lwp_params {
         env_proxy => 1,
         timeout => 30,
     );
-    $p{agent} = delete $attr{agent};
+
+    if ($attr{agent}) {
+        $p{agent} = delete $attr{agent};
+    }
+
+    if ($attr{default_headers}) {
+        $p{default_headers} = HTTP::Headers->new(%{$attr{default_headers}})
+    }
+
     %p;
 }
 

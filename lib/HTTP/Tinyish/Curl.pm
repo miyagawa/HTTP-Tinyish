@@ -36,11 +36,12 @@ sub new {
 }
 
 sub get {
-    my($self, $url) = @_;
+    my($self, $url, $opts) = @_;
+    $opts ||= {};
 
     my($output, $error);
     eval {
-        run3 [$curl, $self->build_options($url), $url], \undef, \$output, \$error;
+        run3 [$curl, $self->build_options($url, $opts), $url], \undef, \$output, \$error;
     };
 
     if ($@ or $?) {
@@ -53,11 +54,12 @@ sub get {
 }
 
 sub mirror {
-    my($self, $url, $file) = @_;
+    my($self, $url, $file, $opts) = @_;
+    $opts ||= {};
 
     my $output;
     eval {
-        run3 [$curl, $self->build_options($url), $url, '-z', $file, '-o', $file, '--remote-time'], \undef, \$output, \undef;
+        run3 [$curl, $self->build_options($url, $opts), $url, '-z', $file, '-o', $file, '--remote-time'], \undef, \$output, \undef;
     };
 
     if ($@) {
@@ -70,7 +72,7 @@ sub mirror {
 }
 
 sub build_options {
-    my($self, $url) = @_;
+    my($self, $url, $opts) = @_;
 
     my @options = (
         '--location',
@@ -79,11 +81,31 @@ sub build_options {
     );
 
     if ($self->{agent}) {
-        push @options,
-          '--user-agent', $self->{agent};
+        push @options, '--user-agent', $self->{agent};
+    }
+
+    if ($self->{default_headers}) {
+        $self->_translate_headers($self->{default_headers}, \@options);
+    }
+
+    if ($opts->{headers}) {
+        $self->_translate_headers($opts->{headers}, \@options);
     }
 
     @options;
+}
+
+sub _translate_headers {
+    my($self, $headers, $options) = @_;
+
+    for my $field (keys %$headers) {
+        my $value = $headers->{$field};
+        if (ref $value eq 'ARRAY') {
+            push @$options, map { ('-H', "$field:$_") } @$value;
+        } else {
+            push @$options, '-H', "$field:$value";
+        }
+    }
 }
 
 1;

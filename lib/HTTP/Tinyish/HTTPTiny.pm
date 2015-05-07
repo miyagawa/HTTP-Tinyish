@@ -24,13 +24,13 @@ sub new {
 }
 
 sub get {
-    my($self, $url) = @_;
-    $self->{tiny}->get($url);
+    my $self = shift;
+    $self->{tiny}->get(@_);
 }
 
 sub mirror {
-    my($self, $url, $file) = @_;
-    $self->{tiny}->mirror($url, $file);
+    my $self = shift;
+    $self->{tiny}->mirror(@_);
 }
 
 1;

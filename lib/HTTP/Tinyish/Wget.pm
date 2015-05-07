@@ -44,11 +44,12 @@ sub new {
 }
 
 sub get {
-    my($self, $url) = @_;
+    my($self, $url, $opts) = @_;
+    $opts ||= {};
 
     my($stdout, $stderr);
     eval {
-        run3 [$wget, $self->build_options($url), $url, '-O', '-'], \undef, \$stdout, \$stderr;
+        run3 [$wget, $self->build_options($url, $opts), $url, '-O', '-'], \undef, \$stdout, \$stderr;
     };
 
     if ($? && $? <= 128) {
@@ -64,12 +65,13 @@ sub get {
 }
 
 sub mirror {
-    my($self, $url, $file) = @_;
+    my($self, $url, $file, $opts) = @_;
+    $opts ||= {};
 
     # This doesn't send If-Modified-Since because -O and -N are mutually exclusive :(
     my($stdout, $stderr);
     eval {
-        run3 [$wget, $self->build_options($url), $url, '-O', $file], \undef, \$stdout, \$stderr;
+        run3 [$wget, $self->build_options($url, $opts), $url, '-O', $file], \undef, \$stdout, \$stderr;
     };
 
     if ($@ or $?) {
@@ -85,7 +87,7 @@ sub mirror {
 }
 
 sub build_options {
-    my($self, $url) = @_;
+    my($self, $url, $opts) = @_;
 
     my @options = (
         '--retry-connrefused',
@@ -94,11 +96,33 @@ sub build_options {
     );
 
     if ($self->{agent}) {
-        push @options,
-          '--user-agent', $self->{agent};
+        push @options, '--user-agent', $self->{agent};
+    }
+
+    if ($self->{default_headers}) {
+        $self->_translate_headers($self->{default_headers}, \@options);
+    }
+
+    if ($opts->{headers}) {
+        $self->_translate_headers($opts->{headers}, \@options);
     }
 
     @options;
 }
+
+sub _translate_headers {
+    my($self, $headers, $options) = @_;
+
+    for my $field (keys %$headers) {
+        my $value = $headers->{$field};
+        if (ref $value eq 'ARRAY') {
+            push @$options, map { ('--header', "$field:$_") } @$value;
+        } else {
+            push @$options, '--header', "$field:$value";
+        }
+    }
+}
+
+
 
 1;

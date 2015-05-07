@@ -15,12 +15,13 @@ sub configure {
     $curl = which('curl');
 
     eval {
-        run3(['curl-config', '--protocols'], \undef, \my @lines, \undef);
-        for (@lines) {
-            /^(HTTPS?)\s*$/ and $supports{lc $1} = 1;
+        run3([$curl, '--version'], \undef, \my $version, \undef);
+        if ($version =~ /^Protocols: (.*)/m) {
+            my %protocols = map { $_ => 1 } split /\s/, $1;
+            $supports{http}  = 1 if $protocols{http};
+            $supports{https} = 1 if $protocols{https};
         }
 
-        run3(['curl', '--version'], \undef, \my $version, \undef);
         $meta{$curl} = $version;
     };
 

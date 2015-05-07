@@ -84,13 +84,14 @@ sub build_options {
         push @options, '--user-agent', $self->{agent};
     }
 
+    my %headers;
     if ($self->{default_headers}) {
-        $self->_translate_headers($self->{default_headers}, \@options);
+        %headers = %{$self->{default_headers}};
     }
-
     if ($opts->{headers}) {
-        $self->_translate_headers($opts->{headers}, \@options);
+        %headers = (%headers, %{$opts->{headers}});
     }
+    $self->_translate_headers(\%headers, \@options);
 
     @options;
 }

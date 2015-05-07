@@ -99,13 +99,15 @@ sub build_options {
         push @options, '--user-agent', $self->{agent};
     }
 
+    my %headers;
     if ($self->{default_headers}) {
-        $self->_translate_headers($self->{default_headers}, \@options);
+        %headers = %{$self->{default_headers}};
     }
-
     if ($opts->{headers}) {
-        $self->_translate_headers($opts->{headers}, \@options);
+        %headers = (%headers, %{$opts->{headers}});
     }
+    $self->_translate_headers(\%headers, \@options);
+
 
     @options;
 }
@@ -116,7 +118,8 @@ sub _translate_headers {
     for my $field (keys %$headers) {
         my $value = $headers->{$field};
         if (ref $value eq 'ARRAY') {
-            push @$options, map { ('--header', "$field:$_") } @$value;
+            # wget doesn't honor multiple header fields
+            push @$options, '--header', "$field:" . join(",", @$value);
         } else {
             push @$options, '--header', "$field:$value";
         }

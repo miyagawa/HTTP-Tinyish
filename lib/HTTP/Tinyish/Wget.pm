@@ -52,15 +52,20 @@ sub get {
         run3 [$wget, $self->build_options($url, $opts), $url, '-O', '-'], \undef, \$stdout, \$stderr;
     };
 
-    if ($? && $? <= 128) {
+    # wget exit codes: (man wget)
+    # 4   Network failure.
+    # 5   SSL verification failure.
+    # 6   Username/password authentication failure.
+    # 7   Protocol errors.
+    # 8   Server issued an error response.
+    if ($? && ($? >> 8) <= 5) {
         return internal_error($url, $@ || $stderr);
     }
 
     $stderr =~ s/^  //gm;
-    $stderr =~ s/.+^(HTTP\/\d\.\d)/$1/ms; # multiple replies for authenticated requests :/
 
-    my $res = { url => $url };
-    parse_http_response(join("\n", $stderr, $stdout), $res);
+    my $res = { url => $url, content => $stdout };
+    parse_http_response($stderr, $res);
     $res;
 }
 
@@ -79,10 +84,9 @@ sub mirror {
     }
 
     $stderr =~ s/^  //gm;
-    $stderr =~ s/.*^(HTTP\/\d\.\d)/$1/ms; # multiple replies for authenticated requests :/
 
-    my $res = { url => $url };
-    parse_http_response(join("\n", $stderr, $stdout), $res);
+    my $res = { url => $url, content => $stdout };
+    parse_http_response($stderr, $res);
     $res;
 }
 
@@ -91,8 +95,12 @@ sub build_options {
 
     my @options = (
         '--retry-connrefused',
-        '--quiet',
+        '--no-verbose',
         '--server-response',
+        '--timeout', ($self->{timeout} || 60),
+        '--tries', 1,
+        '--max-redirect', ($self->{max_redirect} || 5),
+        '--user-agent', ($self->{agent} || "HTTP-Tinyish/$HTTP::Tinyish::VERSION"),
     );
 
     if ($self->{agent}) {
@@ -108,6 +116,9 @@ sub build_options {
     }
     $self->_translate_headers(\%headers, \@options);
 
+    unless ($self->{verify_SSL}) {
+        push @options, '--no-check-certificate';
+    }
 
     @options;
 }
@@ -125,7 +136,5 @@ sub _translate_headers {
         }
     }
 }
-
-
 
 1;

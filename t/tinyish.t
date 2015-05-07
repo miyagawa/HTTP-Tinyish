@@ -23,7 +23,7 @@ for my $backend ( @HTTP::Tinyish::Backends ) {
 
  SKIP: {
         skip "HTTPS is not supported with $backend", 2 unless $backend->supports('https');
-        $res = HTTP::Tinyish->new->get("https://cpan.metacpan.org");
+        $res = HTTP::Tinyish->new(verify_SSL => 1)->get("https://cpan.metacpan.org");
         is $res->{status}, 200;
         like $res->{content}, qr/Comprehensive/;
     }
@@ -59,6 +59,18 @@ for my $backend ( @HTTP::Tinyish::Backends ) {
     $res = HTTP::Tinyish->new->get("http://user:passwd\@httpbin.org/basic-auth/user/passwd");
     is $res->{status}, 200;
     is_deeply decode_json($res->{content}), { authenticated => JSON::PP::true(), user => "user" };
+
+    $res = HTTP::Tinyish->new->get("http://httpbin.org/redirect/1");
+    is $res->{status}, 200;
+
+    $res = HTTP::Tinyish->new(max_redirect => 2)->get("http://httpbin.org/redirect/3");
+    isnt $res->{status}, 200; # either 302 or 599
+
+    $res = HTTP::Tinyish->new(timeout => 1)->get("http://httpbin.org/delay/2");
+    is substr($res->{status}, 0, 1), '5';
+
+    $res = HTTP::Tinyish->new->get("http://httpbin.org/encoding/utf8");
+    like $res->{content}, qr/コンニチハ/;
 }
 
 done_testing;

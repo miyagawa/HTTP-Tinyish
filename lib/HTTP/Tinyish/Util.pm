@@ -5,19 +5,15 @@ our @ISA = qw(Exporter);
 our @EXPORT_OK = qw(parse_http_response internal_error);
 
 sub parse_http_response {
-    my($chunk, $res) = @_;
+    my($header, $res) = @_;
 
-    # double line break indicates end of header; parse it
-    if ($chunk =~ /^(.*?\x0d?\x0a\x0d?\x0a)/s) {
-        _parse_header($chunk, length $1, $res);
+    # it might have multiple headers in it because of redirects
+    $header =~ s/.*^(HTTP\/\d\.\d )/$1/ms;
+
+    # grab the first chunk until the line break
+    if ($header =~ /^(.*?\x0d?\x0a\x0d?\x0a)/) {
+        $header = $1;
     }
-}
-
-sub _parse_header {
-    my($chunk, $eoh, $res) = @_;
-
-    my $header = substr($chunk, 0, $eoh, '');
-    $chunk =~ s/^\x0d?\x0a\x0d?\x0a//;
 
     # parse into lines
     my @header = split /\x0d?\x0a/,$header;
@@ -61,8 +57,6 @@ sub _parse_header {
             $res->{headers}{$k} = $header;
         }
     }
-
-    $res->{content} = $chunk;
 }
 
 sub internal_error {

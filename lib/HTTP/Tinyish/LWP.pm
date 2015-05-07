@@ -55,7 +55,7 @@ sub get {
 
     return {
         url     => $url,
-        content => $res->decoded_content,
+        content => $res->decoded_content(charset => 'none'),
         success => $res->is_success,
         status  => $res->code,
         reason  => $res->message,
@@ -82,11 +82,14 @@ sub lwp_params {
     my %p = (
         parse_head => 0,
         env_proxy => 1,
-        timeout => 30,
+        timeout      => delete $attr{timeout} || 60,
+        max_redirect => delete $attr{max_redirect} || 5,
+        agent        => delete $attr{agent} || "HTTP-Tinyish/$HTTP::Tinyish::VERSION",
     );
 
-    if ($attr{agent}) {
-        $p{agent} = delete $attr{agent};
+    # LWP default is to verify, HTTP::Tiny isn't
+    unless ($attr{verify_SSL}) {
+        $p{ssl_opts}{verify_hostname} = 0;
     }
 
     if ($attr{default_headers}) {

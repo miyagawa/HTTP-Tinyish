@@ -27,8 +27,10 @@ sub supports {
 sub new {
     my($class, %attr) = @_;
 
+    my $ua = LWP::UserAgent->new;
+    
     bless {
-        ua => LWP::UserAgent->new($class->lwp_params(%attr)),
+        ua => $class->translate_lwp($ua, %attr),
     }, $class;
 }
 
@@ -85,27 +87,25 @@ sub mirror {
     };
 }
 
-sub lwp_params {
-    my($class, %attr) = @_;
+sub translate_lwp {
+    my($class, $agent, %attr) = @_;
 
-    my %p = (
-        parse_head => 0,
-        env_proxy => 1,
-        timeout      => delete $attr{timeout} || 60,
-        max_redirect => delete $attr{max_redirect} || 5,
-        agent        => delete $attr{agent} || "HTTP-Tinyish/$HTTP::Tinyish::VERSION",
-    );
+    $agent->parse_head(0);
+    $agent->env_proxy;
+    $agent->timeout(delete $attr{timeout} || 60);
+    $agent->max_redirect(delete $attr{max_redirect} || 5);
+    $agent->agent(delete $attr{agent} || "HTTP-Tinyish/$HTTP::Tinyish::VERSION");
 
     # LWP default is to verify, HTTP::Tiny isn't
     unless ($attr{verify_SSL}) {
-        $p{ssl_opts}{verify_hostname} = 0;
+        $agent->ssl_opts(verify_hostname => 0);
     }
 
     if ($attr{default_headers}) {
-        $p{default_headers} = HTTP::Headers->new(%{$attr{default_headers}})
+        $agent->default_headers( HTTP::Headers->new(%{$attr{default_headers}}) );
     }
 
-    %p;
+    $agent;
 }
 
 1;

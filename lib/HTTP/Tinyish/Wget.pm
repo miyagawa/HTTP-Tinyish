@@ -12,7 +12,7 @@ my $method_supported;
 
 sub _run_wget {
     run3([$wget, @_], \undef, \my $out, \my $err);
-    ($out, $err);
+    wantarray ? ($out, $err) : $out;
 }
 
 sub configure {
@@ -23,6 +23,12 @@ sub configure {
 
     eval {
         local $ENV{LC_ALL} = 'en_US';
+
+        $meta{$wget} = _run_wget('--version');
+        if ($meta{$wget} =~ /GNU Wget 1\.(\d+)/ and $1 < 11) {
+            Carp::carp "Wget version is too old. $meta{$wget}";
+            return;
+        }
 
         my $config = $class->new(agent => __PACKAGE__);
         my @options = grep { $_ ne '--quiet' } $config->build_options("GET");
@@ -39,7 +45,6 @@ sub configure {
             $method_supported = $meta{method_supported} = 1;
         }
 
-        $meta{$wget} = _run_wget('--version');
     };
 
     \%meta;

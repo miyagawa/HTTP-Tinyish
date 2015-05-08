@@ -67,7 +67,7 @@
          "web" : "https://github.com/miyagawa/HTTP-Tinyish"
       }
    },
-   "version" : "0.02",
+   "version" : "0.03",
    "x_contributors" : [
       "Tatsuhiko Miyagawa <miyagawa@bulknews.net>"
    ]

@@ -74,7 +74,17 @@ HTTP::Tinyish - HTTP::Tiny compatible HTTP client wrappers
 
 =head1 SYNOPSIS
 
-  my $res = HTTP::Tinyish->new->get("http://www.cpan.org/");
+  my $http = HTTP::Tinyish->new(agent => "Mozilla/4.0");
+
+  my $res = $http->get("http://www.cpan.org/");
+  warn $res->{status};
+
+  $http->post("http://example.com/post", {
+      headers => { "Content-Type" => "application/x-www-form-urlencoded" },
+      content => "foo=bar&baz=quux",
+  });
+
+  $http->mirror("http://www.cpan.org/modules/02packages.details.txt.gz", "./02packages.details.txt.gz");
 
 =head1 DESCRIPTION
 
@@ -86,10 +96,80 @@ has been extracted out of L<App::cpanminus>. This module can be useful
 in a restrictive environment where you need to be able to download
 CPAN modules without an HTTPS support in built-in HTTP library.
 
-=head1 SUPPORTED METHODS
+=head1 COMPATIBILITIES
 
 All request related methods such as C<get>, C<post>, C<put>,
 C<delete>, C<request> and C<mirror> are supported.
+
+=head2 LWP
+
+=over 4
+
+=item *
+
+L<LWP> backend requires L<LWP> 5.802 or over to be functional, and L<LWP::Protocol::https> to send HTTPS requests.
+
+=item *
+
+C<mirror> method doesn't consider third options hash into account (i.e. you can't override the HTTP headers).
+
+=item *
+
+proxy is automatically detected from environment variables.
+
+=item *
+
+C<timeout>, C<max_redirect>, C<agent>, C<default_headers> and C<verify_SSL> are translated.
+
+=back
+
+=head2 HTTP::Tiny
+
+Because the actual HTTP::Tiny backend is used, all APIs are supported.
+
+=head2 Curl
+
+=over
+
+=item *
+
+This module has been tested with curl 7.22 and later.
+
+=item *
+
+HTTPS support is automatically detected by running C<curl --version> and see its protocol output.
+
+=item *
+
+C<timeout>, C<max_redirect>, C<agent>, C<default_headers> and C<verify_SSL> are supported.
+
+=back
+
+=head2 Wget
+
+=over 4
+
+=item *
+
+This module has been tested with Wget 1.12 and later.
+
+=item *
+
+Wget prior to 1.15 doesn't support sending custom HTTP methods, so if you use C<< $http->put >> for example, you'll get an internal error response (599).
+
+=item *
+
+HTTPS support is automatically detected.
+
+=item *
+
+C<mirror()> method doesn't send C<If-Modified-Since> header to the server, which will result in full-download every time because C<wget> doesn't support C<--timestamping>.
+
+=item *
+
+C<timeout>, C<max_redirect>, C<agent>, C<default_headers> and C<verify_SSL> are supported.
+
+=back
 
 =head1 SIMILAR MODULES
 

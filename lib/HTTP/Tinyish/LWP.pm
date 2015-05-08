@@ -98,7 +98,9 @@ sub translate_lwp {
 
     # LWP default is to verify, HTTP::Tiny isn't
     unless ($attr{verify_SSL}) {
-        $agent->ssl_opts(verify_hostname => 0);
+        if ($agent->can("ssl_opts")) {
+            $agent->ssl_opts(verify_hostname => 0);
+        }
     }
 
     if ($attr{default_headers}) {

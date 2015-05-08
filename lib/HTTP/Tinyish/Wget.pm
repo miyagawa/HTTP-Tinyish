@@ -27,8 +27,6 @@ sub configure {
         my $config = $class->new(agent => __PACKAGE__);
         my @options = grep { $_ ne '--quiet' } $config->build_options("GET");
 
-        # TODO requires 1.12 for server-response with quiet support?
-
         my(undef, $err) = _run_wget(@options, 'https://');
         if ($err && $err =~ /HTTPS support not compiled/) {
             $supports{http} = 1;
@@ -36,9 +34,9 @@ sub configure {
             $supports{http} = $supports{https} = 1;
         }
 
-        (undef, $err) = _run_wget('--xmethod', 'GET', 'http://');
+        (undef, $err) = _run_wget('--method', 'GET', 'http://');
         if ($err && $err =~ /Invalid host/) {
-            $method_supported = 1;
+            $method_supported = $meta{method_supported} = 1;
         }
 
         $meta{$wget} = _run_wget('--version');
@@ -78,10 +76,11 @@ sub request {
         return $self->internal_error($url, $@ || $stderr);
     }
 
-    $stderr =~ s/^  //gm;
+    my $header = '';
+    $stderr =~ s{^  (\S.*)$}{ $header .= $1."\n" }gem;
 
     my $res = { url => $url, content => $stdout };
-    $self->parse_http_header($stderr, $res);
+    $self->parse_http_header($header, $res);
     $res;
 }
 
@@ -111,7 +110,6 @@ sub build_options {
 
     my @options = (
         '--retry-connrefused',
-        '--no-verbose',
         '--server-response',
         '--timeout', ($self->{timeout} || 60),
         '--tries', 1,

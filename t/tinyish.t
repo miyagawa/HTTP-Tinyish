@@ -18,7 +18,9 @@ my @backends = $ENV{TEST_BACKEND}
 
 for my $backend (@backends) {
     $HTTP::Tinyish::PreferredBackend = $backend;
-    HTTP::Tinyish->configure_backend($backend) && $backend->supports('http') or next;
+    my $config = HTTP::Tinyish->configure_backend($backend);
+    next unless $config && $backend->supports('http');
+
     diag "Testing with $backend";
 
     my $res = HTTP::Tinyish->new->get("http://www.cpan.org");
@@ -54,7 +56,8 @@ for my $backend (@backends) {
     }
 
  SKIP: {
-        skip "wget before 1.15 doesn't support custom HTTP methods", 2 if $backend =~ /Wget/;
+        skip "wget before 1.15 doesn't support custom HTTP methods", 2
+          if $backend =~ /Wget/ && !$config->{method_supported};
         $res = HTTP::Tinyish->new->put("http://httpbin.org/put", {
             headers => { 'Content-Type' => 'text/plain' },
             content => "foobarbaz",

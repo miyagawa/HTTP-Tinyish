@@ -25,7 +25,7 @@ sub configure {
         local $ENV{LC_ALL} = 'en_US';
 
         $meta{$wget} = _run_wget('--version');
-        if ($meta{$wget} =~ /GNU Wget 1\.(\d+)/ and $1 < 11) {
+        unless ($meta{$wget} =~ /GNU Wget 1\.(\d+)/ and $1 >= 12) {
             Carp::carp "Wget version is too old. $meta{$wget}";
             return;
         }

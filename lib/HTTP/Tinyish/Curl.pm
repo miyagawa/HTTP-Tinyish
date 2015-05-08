@@ -1,10 +1,11 @@
 package HTTP::Tinyish::Curl;
 use strict;
 use warnings;
+use parent qw(HTTP::Tinyish::Base);
+
 use IPC::Run3 qw(run3);
 use File::Which qw(which);
 use File::Temp ();
-use HTTP::Tinyish::Util qw(parse_http_response internal_error);
 
 my %supports;
 my $curl;
@@ -42,8 +43,8 @@ sub new {
     bless \%attr, $class;
 }
 
-sub get {
-    my($self, $url, $opts) = @_;
+sub request {
+    my($self, $method, $url, $opts) = @_;
     $opts ||= {};
 
     my(undef, $temp) = File::Temp::tempfile;
@@ -52,6 +53,8 @@ sub get {
     eval {
         run3 [
             $curl,
+            '-X', $method,
+            ($method eq 'HEAD' ? ('--head') : ()),
             $self->build_options($url, $opts),
             '--dump-header', $temp,
             $url,
@@ -59,11 +62,11 @@ sub get {
     };
 
     if ($@ or $?) {
-        return internal_error($url, $@ || $error);
+        return $self->internal_error($url, $@ || $error);
     }
 
     my $res = { url => $url, content => $output };
-    parse_http_response( _slurp($temp), $res );
+    $self->parse_http_header( _slurp($temp), $res );
     $res;
 }
 
@@ -87,11 +90,11 @@ sub mirror {
     };
 
     if ($@) {
-        return internal_error($url, $@);
+        return $self->internal_error($url, $@);
     }
 
     my $res = { url => $url, content => $output };
-    parse_http_response( _slurp($temp), $res );
+    $self->parse_http_header( _slurp($temp), $res );
     $res;
 }
 
@@ -117,6 +120,18 @@ sub build_options {
 
     unless ($self->{verify_SSL}) {
         push @options, '--insecure';
+    }
+
+    if ($opts->{content}) {
+        my $content;
+        if (ref $opts->{content} eq 'CODE') {
+            while (my $chunk = $opts->{content}->()) {
+                $content .= $chunk;
+            }
+        } else {
+            $content = $opts->{content};
+        }
+        push @options, '--data', $content;
     }
 
     @options;

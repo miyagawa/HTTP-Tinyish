@@ -28,6 +28,27 @@ for my $backend ( @HTTP::Tinyish::Backends ) {
         like $res->{content}, qr/Comprehensive/;
     }
 
+    $res = HTTP::Tinyish->new->head("http://httpbin.org/headers");
+    is $res->{status}, 200;
+
+    $res = HTTP::Tinyish->new->post("http://httpbin.org/post", {
+        headers => { 'Content-Type' => 'application/x-www-form-urlencoded' },
+        content => "foo=1&bar=2",
+    });
+    is $res->{status}, 200;
+    is_deeply decode_json($res->{content})->{form}, { foo => "1", bar => "2" };
+
+ SKIP: {
+        skip "HTTP::Tiny's chunked upload is not supported by httpbin.", 1 if $backend =~ /HTTPTiny/;
+        my @data = ("xyz\n", "xyz");
+        $res = HTTP::Tinyish->new(timeout => 1)->post("http://httpbin.org/post", {
+            headers => { 'Content-Type' => 'application/octet-stream' },
+            content => sub { shift @data },
+        });
+        is $res->{status}, 200;
+        is_deeply decode_json($res->{content})->{data}, "xyz\nxyz";
+    }
+
     $res = HTTP::Tinyish->new(default_headers => { "Foo" => "Bar", Dnt => "1" })
       ->get("http://httpbin.org/headers", { headers => { "Foo" => ["Bar", "Baz"] } });
     is decode_json($res->{content})->{headers}{Foo}, "Bar,Baz";

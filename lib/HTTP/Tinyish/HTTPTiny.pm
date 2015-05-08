@@ -1,5 +1,6 @@
 package HTTP::Tinyish::HTTPTiny;
 use strict;
+use parent qw(HTTP::Tinyish::Base);
 use HTTP::Tiny;
 
 my %supports = (http => 1);
@@ -23,9 +24,9 @@ sub new {
     }, $class;
 }
 
-sub get {
+sub request {
     my $self = shift;
-    $self->{tiny}->get(@_);
+    $self->{tiny}->request(@_);
 }
 
 sub mirror {

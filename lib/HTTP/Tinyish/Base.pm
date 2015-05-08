@@ -1,11 +1,22 @@
-package HTTP::Tinyish::Util;
+package HTTP::Tinyish::Base;
 use strict;
-use Exporter;
-our @ISA = qw(Exporter);
-our @EXPORT_OK = qw(parse_http_response internal_error);
+use warnings;
 
-sub parse_http_response {
-    my($header, $res) = @_;
+for my $sub_name ( qw/get head put post delete/ ) {
+    my $req_method = uc $sub_name;
+    eval <<"HERE";
+    sub $sub_name {
+        my (\$self, \$url, \$args) = \@_;
+        \@_ == 2 || (\@_ == 3 && ref \$args eq 'HASH')
+        or Carp::croak(q/Usage: \$http->$sub_name(URL, [HASHREF])/ . "\n");
+        return \$self->request('$req_method', \$url, \$args || {});
+    }
+
+HERE
+}
+
+sub parse_http_header {
+    my($self, $header, $res) = @_;
 
     # it might have multiple headers in it because of redirects
     $header =~ s/.*^(HTTP\/\d\.\d )/$1/ms;
@@ -60,7 +71,7 @@ sub parse_http_response {
 }
 
 sub internal_error {
-    my($url, $message) = @_;
+    my($self, $url, $message) = @_;
 
     return {
         content => $message,

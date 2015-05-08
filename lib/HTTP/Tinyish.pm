@@ -14,14 +14,19 @@ sub new {
     bless \%attr, $class;
 }
 
-sub get {
-    my $self = shift;
-    $self->_backend_for($_[0])->get(@_);
+for my $method (qw/get head put post delete mirror/) {
+    no strict 'refs';
+    eval <<"HERE";
+    sub $method {
+        my \$self = shift;
+        \$self->_backend_for(\$_[0])->$method(\@_);
+    }
+HERE
 }
 
-sub mirror {
+sub request {
     my $self = shift;
-    $self->_backend_for($_[0])->mirror(@_);
+    $self->_backend_for($_[1])->request(@_);
 }
 
 sub _backend_for {
@@ -83,7 +88,8 @@ CPAN modules without an HTTPS support in built-in HTTP library.
 
 =head1 SUPPORTED METHODS
 
-C<get> and C<mirror> are only supported right now.
+All request related methods such as C<get>, C<post>, C<put>,
+C<delete>, C<request> and C<mirror> are supported.
 
 =head1 SIMILAR MODULES
 

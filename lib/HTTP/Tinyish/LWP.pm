@@ -1,5 +1,7 @@
 package HTTP::Tinyish::LWP;
 use strict;
+use parent qw(HTTP::Tinyish::Base);
+
 use LWP 5.802;
 use LWP::UserAgent;
 
@@ -41,14 +43,18 @@ sub _headers_to_hashref {
     \%headers;
 }
 
-sub get {
-    my($self, $url, $opts) = @_;
+sub request {
+    my($self, $method, $url, $opts) = @_;
     $opts ||= {};
 
-    my $req = HTTP::Request->new(GET => $url);
+    my $req = HTTP::Request->new($method => $url);
 
     if ($opts->{headers}) {
         $req->header(%{$opts->{headers}});
+    }
+
+    if ($opts->{content}) {
+        $req->content($opts->{content});
     }
 
     my $res = $self->{ua}->request($req);
@@ -65,7 +71,10 @@ sub get {
 
 sub mirror {
     my($self, $url, $file) = @_;
+
+    # TODO support optional headers
     my $res = $self->{ua}->mirror($url, $file);
+
     return {
         url     => $url,
         content => $res->decoded_content,

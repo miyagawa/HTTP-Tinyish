@@ -1,9 +1,10 @@
 package HTTP::Tinyish::Wget;
 use strict;
 use warnings;
+use parent qw(HTTP::Tinyish::Base);
+
 use IPC::Run3 qw(run3);
 use File::Which qw(which);
-use HTTP::Tinyish::Util qw(parse_http_response internal_error);
 
 my %supports;
 my $wget;
@@ -43,13 +44,19 @@ sub new {
     bless \%attr, $class;
 }
 
-sub get {
-    my($self, $url, $opts) = @_;
+sub request {
+    my($self, $method, $url, $opts) = @_;
     $opts ||= {};
 
     my($stdout, $stderr);
     eval {
-        run3 [$wget, $self->build_options($url, $opts), $url, '-O', '-'], \undef, \$stdout, \$stderr;
+        run3 [
+            $wget,
+            '--method', $method,
+            $self->build_options($url, $opts),
+            $url,
+            '-O', '-',
+        ], \undef, \$stdout, \$stderr;
     };
 
     # wget exit codes: (man wget)
@@ -59,13 +66,13 @@ sub get {
     # 7   Protocol errors.
     # 8   Server issued an error response.
     if ($? && ($? >> 8) <= 5) {
-        return internal_error($url, $@ || $stderr);
+        return $self->internal_error($url, $@ || $stderr);
     }
 
     $stderr =~ s/^  //gm;
 
     my $res = { url => $url, content => $stdout };
-    parse_http_response($stderr, $res);
+    $self->parse_http_header($stderr, $res);
     $res;
 }
 
@@ -80,13 +87,13 @@ sub mirror {
     };
 
     if ($@ or $?) {
-        return internal_error($url, $@ || $stderr);
+        return $self->internal_error($url, $@ || $stderr);
     }
 
     $stderr =~ s/^  //gm;
 
     my $res = { url => $url, content => $stdout };
-    parse_http_response($stderr, $res);
+    $self->parse_http_header($stderr, $res);
     $res;
 }
 
@@ -118,6 +125,18 @@ sub build_options {
 
     unless ($self->{verify_SSL}) {
         push @options, '--no-check-certificate';
+    }
+
+    if ($opts->{content}) {
+        my $content;
+        if (ref $opts->{content} eq 'CODE') {
+            while (my $chunk = $opts->{content}->()) {
+                $content .= $chunk;
+            }
+        } else {
+            $content = $opts->{content};
+        }
+        push @options, '--body-data', $content;
     }
 
     @options;

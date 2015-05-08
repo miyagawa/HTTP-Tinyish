@@ -32,6 +32,10 @@ for my $backend (@backends) {
         $res = HTTP::Tinyish->new(verify_SSL => 1)->get("https://github.com/");
         is $res->{status}, 200;
         like $res->{content}, qr/github/i;
+
+        $res = HTTP::Tinyish->new(verify_SSL => 0)->get("https://cpan.metacpan.org/");
+        is $res->{status}, 200;
+        like $res->{content}, qr/Comprehensive/i;
     }
 
     $res = HTTP::Tinyish->new->head("http://httpbin.org/headers");

@@ -146,7 +146,7 @@ sub build_options {
     }
     $self->_translate_headers(\%headers, \@options);
 
-    unless ($self->{verify_SSL}) {
+    if ($supports{https} && !$self->{verify_SSL}) {
         push @options, '--no-check-certificate';
     }
 

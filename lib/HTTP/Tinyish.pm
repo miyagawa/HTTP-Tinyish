@@ -151,7 +151,7 @@ C<timeout>, C<max_redirect>, C<agent>, C<default_headers> and C<verify_SSL> are 
 
 =item *
 
-This module has been tested with Wget 1.12 and later.
+This module requires Wget 1.12 and later.
 
 =item *
 

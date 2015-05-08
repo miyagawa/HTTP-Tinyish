@@ -12,7 +12,11 @@ sub read_file {
     join "", <$fh>;
 }
 
-for my $backend ( @HTTP::Tinyish::Backends ) {
+my @backends = $ENV{TEST_BACKEND}
+  ? map "HTTP::Tinyish::$_", split(",", $ENV{TEST_BACKEND})
+  : @HTTP::Tinyish::Backends;
+
+for my $backend (@backends) {
     $HTTP::Tinyish::PreferredBackend = $backend;
     HTTP::Tinyish->configure_backend($backend) && $backend->supports('http') or next;
     diag "Testing with $backend";

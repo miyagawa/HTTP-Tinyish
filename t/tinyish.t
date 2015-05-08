@@ -29,9 +29,9 @@ for my $backend (@backends) {
 
  SKIP: {
         skip "HTTPS is not supported with $backend", 2 unless $backend->supports('https');
-        $res = HTTP::Tinyish->new(verify_SSL => 1)->get("https://cpan.metacpan.org");
+        $res = HTTP::Tinyish->new(verify_SSL => 1)->get("https://github.com/");
         is $res->{status}, 200;
-        like $res->{content}, qr/Comprehensive/;
+        like $res->{content}, qr/github/i;
     }
 
     $res = HTTP::Tinyish->new->head("http://httpbin.org/headers");

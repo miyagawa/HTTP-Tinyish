@@ -49,6 +49,16 @@ for my $backend ( @HTTP::Tinyish::Backends ) {
         is_deeply decode_json($res->{content})->{data}, "xyz\nxyz";
     }
 
+ SKIP: {
+        skip "wget before 1.15 doesn't support custom HTTP methods", 2 if $backend =~ /Wget/;
+        $res = HTTP::Tinyish->new->put("http://httpbin.org/put", {
+            headers => { 'Content-Type' => 'text/plain' },
+            content => "foobarbaz",
+        });
+        is $res->{status}, 200;
+        is_deeply decode_json($res->{content})->{data}, "foobarbaz";
+    }
+
     $res = HTTP::Tinyish->new(default_headers => { "Foo" => "Bar", Dnt => "1" })
       ->get("http://httpbin.org/headers", { headers => { "Foo" => ["Bar", "Baz"] } });
     is decode_json($res->{content})->{headers}{Foo}, "Bar,Baz";

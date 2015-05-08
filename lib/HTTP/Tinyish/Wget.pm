@@ -8,6 +8,12 @@ use File::Which qw(which);
 
 my %supports;
 my $wget;
+my $method_supported;
+
+sub _run_wget {
+    run3([$wget, @_], \undef, \my $out, \my $err);
+    ($out, $err);
+}
 
 sub configure {
     my $class = shift;
@@ -19,19 +25,23 @@ sub configure {
         local $ENV{LC_ALL} = 'en_US';
 
         my $config = $class->new(agent => __PACKAGE__);
-        my @options = grep { $_ ne '--quiet' } $config->build_options;
-
-        run3([$wget, @options, 'https://'], \undef, \my $out, \my $err);
+        my @options = grep { $_ ne '--quiet' } $config->build_options("GET");
 
         # TODO requires 1.12 for server-response with quiet support?
+
+        my(undef, $err) = _run_wget(@options, 'https://');
         if ($err && $err =~ /HTTPS support not compiled/) {
             $supports{http} = 1;
         } elsif ($err && $err =~ /Invalid host/) {
             $supports{http} = $supports{https} = 1;
         }
 
-        run3([$wget, '--version'], \undef, \my $version, \undef);
-        $meta{$wget} = "$version";
+        (undef, $err) = _run_wget('--xmethod', 'GET', 'http://');
+        if ($err && $err =~ /Invalid host/) {
+            $method_supported = 1;
+        }
+
+        $meta{$wget} = _run_wget('--version');
     };
 
     \%meta;
@@ -52,8 +62,7 @@ sub request {
     eval {
         run3 [
             $wget,
-            '--method', $method,
-            $self->build_options($url, $opts),
+            $self->build_options($method, $url, $opts),
             $url,
             '-O', '-',
         ], \undef, \$stdout, \$stderr;
@@ -65,7 +74,7 @@ sub request {
     # 6   Username/password authentication failure.
     # 7   Protocol errors.
     # 8   Server issued an error response.
-    if ($? && ($? >> 8) <= 5) {
+    if ($@ or $? && ($? >> 8) <= 5) {
         return $self->internal_error($url, $@ || $stderr);
     }
 
@@ -83,7 +92,7 @@ sub mirror {
     # This doesn't send If-Modified-Since because -O and -N are mutually exclusive :(
     my($stdout, $stderr);
     eval {
-        run3 [$wget, $self->build_options($url, $opts), $url, '-O', $file], \undef, \$stdout, \$stderr;
+        run3 [$wget, $self->build_options("GET", $url, $opts), $url, '-O', $file], \undef, \$stdout, \$stderr;
     };
 
     if ($@ or $?) {
@@ -98,7 +107,7 @@ sub mirror {
 }
 
 sub build_options {
-    my($self, $url, $opts) = @_;
+    my($self, $method, $url, $opts) = @_;
 
     my @options = (
         '--retry-connrefused',
@@ -109,6 +118,18 @@ sub build_options {
         '--max-redirect', ($self->{max_redirect} || 5),
         '--user-agent', ($self->{agent} || "HTTP-Tinyish/$HTTP::Tinyish::VERSION"),
     );
+
+    if ($method_supported) {
+        push @options, "--method", $method;
+    } else {
+        if ($method eq 'GET' or $method eq 'POST') {
+            # OK
+        } elsif ($method eq 'HEAD') {
+            push @options, '--spider';
+        } else {
+            die "This version of wget doesn't support specifying HTTP method '$method'";
+        }
+    }
 
     if ($self->{agent}) {
         push @options, '--user-agent', $self->{agent};
@@ -136,7 +157,12 @@ sub build_options {
         } else {
             $content = $opts->{content};
         }
-        push @options, '--body-data', $content;
+
+        if ($method_supported) {
+            push @options, '--body-data', $content;
+        } else {
+            push @options, '--post-data', $content;
+        }
     }
 
     @options;

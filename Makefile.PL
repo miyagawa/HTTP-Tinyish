@@ -20,7 +20,8 @@ my %WriteMakefileArgs = (
   "PREREQ_PM" => {
     "File::Which" => 0,
     "HTTP::Tiny" => "0.054",
-    "IPC::Run3" => 0
+    "IPC::Run3" => 0,
+    "parent" => 0
   },
   "TEST_REQUIRES" => {
     "JSON::PP" => 0,
@@ -39,7 +40,8 @@ my %FallbackPrereqs = (
   "HTTP::Tiny" => "0.054",
   "IPC::Run3" => 0,
   "JSON::PP" => 0,
-  "Test::More" => "0.96"
+  "Test::More" => "0.96",
+  "parent" => 0
 );
 
 

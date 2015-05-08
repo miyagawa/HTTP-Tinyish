@@ -18,7 +18,8 @@ CPAN modules without an HTTPS support in built-in HTTP library.
 
 # SUPPORTED METHODS
 
-`get` and `mirror` are only supported right now.
+All request related methods such as `get`, `post`, `put`,
+`delete`, `request` and `mirror` are supported.
 
 # SIMILAR MODULES
 

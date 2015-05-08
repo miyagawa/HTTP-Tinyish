@@ -44,6 +44,7 @@
             "File::Which" : "0",
             "HTTP::Tiny" : "0.054",
             "IPC::Run3" : "0",
+            "parent" : "0",
             "perl" : "5.008005"
          }
       },

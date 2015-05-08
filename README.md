@@ -50,7 +50,7 @@ Because the actual HTTP::Tiny backend is used, all APIs are supported.
 
 ## Wget
 
-- This module has been tested with Wget 1.12 and later.
+- This module requires Wget 1.12 and later.
 - Wget prior to 1.15 doesn't support sending custom HTTP methods, so if you use `$http->put` for example, you'll get an internal error response (599).
 - HTTPS support is automatically detected.
 - `mirror()` method doesn't send `If-Modified-Since` header to the server, which will result in full-download every time because `wget` doesn't support `--timestamping`.

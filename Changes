@@ -2,6 +2,11 @@ Revision history for HTTP-Tinyish
 
 {{$NEXT}}
 
+0.05  2015-05-08 14:31:30 PDT
+        - Test with wget 1.12 and up. Also tried to support 1.11 but its exit code and weird
+          server response options made it difficult, so the configure process makes sure that
+          wget is 1.12 or higher.
+
 0.04  2015-05-07 19:30:05 PDT
         - call ssl_opts attribute only when LWP supports it
 

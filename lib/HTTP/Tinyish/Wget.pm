@@ -26,8 +26,7 @@ sub configure {
 
         $meta{$wget} = _run_wget('--version');
         unless ($meta{$wget} =~ /GNU Wget 1\.(\d+)/ and $1 >= 12) {
-            Carp::carp "Wget version is too old. $meta{$wget}";
-            return;
+            die "Wget version is too old. $meta{$wget}";
         }
 
         my $config = $class->new(agent => __PACKAGE__);

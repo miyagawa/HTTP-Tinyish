@@ -163,7 +163,7 @@ HTTPS support is automatically detected.
 
 =item *
 
-C<mirror()> method doesn't send C<If-Modified-Since> header to the server, which will result in full-download every time because C<wget> doesn't support C<--timestamping>.
+C<mirror()> method doesn't send C<If-Modified-Since> header to the server, which will result in full-download every time because C<wget> doesn't support C<--timestamping> combined with C<-O> option.
 
 =item *
 
@@ -181,7 +181,7 @@ L<File::Fetch> - is core since 5.10. Has support for non-HTTP protocols such as 
 
 =item *
 
-L<Plient> - provides more complete runtime API, but is only compatible on Unix environments.
+L<Plient> - provides more complete runtime API, but seems only compatible on Unix environments. Does not support mirror() method.
 
 =back
 

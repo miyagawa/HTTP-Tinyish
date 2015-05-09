@@ -96,6 +96,21 @@ has been extracted out of L<App::cpanminus>. This module can be useful
 in a restrictive environment where you need to be able to download
 CPAN modules without an HTTPS support in built-in HTTP library.
 
+=head1 BACKEND SELECTION
+
+Backends are searched in the order of: C<LWP>, L<HTTP::Tiny>, L<Curl>
+and L<Wget>. HTTP::Tinyish will auto-detect if the backend also
+supports HTTPS, and use the appropriate backend based on the given
+URL to the request methods.
+
+For example, if you only have HTTP::Tiny but without SSL related
+modules, it is possible that:
+
+  my $http = HTTP::Tinyish->new;
+
+  $http->get("http://example.com");  # uses HTTP::Tiny
+  $http->get("https://example.com"); # uses curl
+
 =head1 COMPATIBILITIES
 
 All request related methods such as C<get>, C<post>, C<put>,

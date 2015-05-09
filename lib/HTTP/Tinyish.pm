@@ -183,10 +183,6 @@ L<File::Fetch> - is core since 5.10. Has support for non-HTTP protocols such as 
 
 L<Plient> - provides more complete runtime API, but is only compatible on Unix environments.
 
-=item *
-
-L<HTTP::Tiny::CLI> - only provides curl interface so far, and does not provide C<mirror> wrapper.
-
 =back
 
 =head1 AUTHOR

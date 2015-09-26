@@ -41,7 +41,7 @@ sub parse_http_header {
         }
     }
 
-    my($proto, $status, $reason) = split / /, $status_line;
+    my($proto, $status, $reason) = split / /, $status_line, 3;
     return unless $proto and $proto =~ /^HTTP\/(\d+)\.(\d+)$/i;
 
     $res->{status} = $status;

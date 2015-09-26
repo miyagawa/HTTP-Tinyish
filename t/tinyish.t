@@ -91,6 +91,7 @@ for my $backend (@backends) {
 
     $res = HTTP::Tinyish->new->get("http://httpbin.org/status/404");
     is $res->{status}, 404;
+    is $res->{reason}, "NOT FOUND";
 
     $res = HTTP::Tinyish->new->get("http://httpbin.org/response-headers?Foo=Bar+Baz");
     is $res->{headers}{foo}, "Bar Baz";

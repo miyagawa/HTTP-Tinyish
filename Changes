@@ -2,6 +2,9 @@ Revision history for HTTP-Tinyish
 
 {{$NEXT}}
 
+0.06  2015-09-26 10:22:09 PDT
+        - Fixed parsing of HTTP Status reason (shoichikaji) #2
+
 0.05  2015-05-08 14:31:30 PDT
         - Test with wget 1.12 and up. Also tried to support 1.11 but its exit code and weird
           server response options made it difficult, so the configure process makes sure that

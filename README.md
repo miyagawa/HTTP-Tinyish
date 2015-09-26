@@ -26,6 +26,21 @@ has been extracted out of [App::cpanminus](https://metacpan.org/pod/App::cpanmin
 in a restrictive environment where you need to be able to download
 CPAN modules without an HTTPS support in built-in HTTP library.
 
+# BACKEND SELECTION
+
+Backends are searched in the order of: `LWP`, [HTTP::Tiny](https://metacpan.org/pod/HTTP::Tiny), [Curl](https://metacpan.org/pod/Curl)
+and [Wget](https://metacpan.org/pod/Wget). HTTP::Tinyish will auto-detect if the backend also
+supports HTTPS, and use the appropriate backend based on the given
+URL to the request methods.
+
+For example, if you only have HTTP::Tiny but without SSL related
+modules, it is possible that:
+
+    my $http = HTTP::Tinyish->new;
+
+    $http->get("http://example.com");  # uses HTTP::Tiny
+    $http->get("https://example.com"); # uses curl
+
 # COMPATIBILITIES
 
 All request related methods such as `get`, `post`, `put`,
@@ -53,14 +68,13 @@ Because the actual HTTP::Tiny backend is used, all APIs are supported.
 - This module requires Wget 1.12 and later.
 - Wget prior to 1.15 doesn't support sending custom HTTP methods, so if you use `$http->put` for example, you'll get an internal error response (599).
 - HTTPS support is automatically detected.
-- `mirror()` method doesn't send `If-Modified-Since` header to the server, which will result in full-download every time because `wget` doesn't support `--timestamping`.
+- `mirror()` method doesn't send `If-Modified-Since` header to the server, which will result in full-download every time because `wget` doesn't support `--timestamping` combined with `-O` option.
 - `timeout`, `max_redirect`, `agent`, `default_headers` and `verify_SSL` are supported.
 
 # SIMILAR MODULES
 
 - [File::Fetch](https://metacpan.org/pod/File::Fetch) - is core since 5.10. Has support for non-HTTP protocols such as ftp and git. Does not support HTTPS or basic authentication as of this writing.
-- [Plient](https://metacpan.org/pod/Plient) - provides more complete runtime API, but is only compatible on Unix environments.
-- [HTTP::Tiny::CLI](https://metacpan.org/pod/HTTP::Tiny::CLI) - only provides curl interface so far, and does not provide `mirror` wrapper.
+- [Plient](https://metacpan.org/pod/Plient) - provides more complete runtime API, but seems only compatible on Unix environments. Does not support mirror() method.
 
 # AUTHOR
 

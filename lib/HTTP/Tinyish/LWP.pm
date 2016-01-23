@@ -80,7 +80,7 @@ sub mirror {
     return {
         url     => $url,
         content => $res->decoded_content,
-        success => $res->is_success,
+        success => $res->is_success || $res->code == 304,
         status  => $res->code,
         reason  => $res->message,
         headers => $self->_headers_to_hashref($res->headers),

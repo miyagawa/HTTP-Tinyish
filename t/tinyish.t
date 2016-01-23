@@ -84,6 +84,7 @@ for my $backend (@backends) {
         skip "Wget doesn't handle mirror", 1 if $backend =~ /Wget/;
         $res = HTTP::Tinyish->new->mirror("http://www.cpan.org", $fn);
         is $res->{status}, 304;
+        ok $res->{success};
     }
 
     $res = HTTP::Tinyish->new(agent => "Menlo/1")->get("http://httpbin.org/user-agent");

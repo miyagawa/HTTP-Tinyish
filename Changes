@@ -2,6 +2,9 @@ Revision history for HTTP-Tinyish
 
 {{$NEXT}}
 
+0.07  2016-01-22 19:33:04 PST
+        - 304 response is considered a success #3
+
 0.06  2015-09-26 10:22:09 PDT
         - Fixed parsing of HTTP Status reason (shoichikaji) #2
 

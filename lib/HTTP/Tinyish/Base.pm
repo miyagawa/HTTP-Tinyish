@@ -19,7 +19,7 @@ sub parse_http_header {
     my($self, $header, $res) = @_;
 
     # it might have multiple headers in it because of redirects
-    $header =~ s/.*^(HTTP\/\d\.\d )/$1/ms;
+    $header =~ s/.*^(HTTP\/\d(?:\.\d)?)/$1/ms;
 
     # grab the first chunk until the line break
     if ($header =~ /^(.*?\x0d?\x0a\x0d?\x0a)/) {

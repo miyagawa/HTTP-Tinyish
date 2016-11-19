@@ -67,12 +67,12 @@
          "web" : "https://github.com/miyagawa/HTTP-Tinyish"
       }
    },
-   "version" : "0.08",
+   "version" : "0.09",
    "x_contributors" : [
       "Shoichi Kaji <skaji@cpan.org>",
       "Tatsuhiko Miyagawa <miyagawa@bulknews.net>",
       "Tatsuhiko Miyagawa <miyagawa@gmail.com>"
    ],
-   "x_serialization_backend" : "Cpanel::JSON::XS version 3.0222"
+   "x_serialization_backend" : "Cpanel::JSON::XS version 3.0223"
 }
 

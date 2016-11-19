@@ -2,6 +2,9 @@ Revision history for HTTP-Tinyish
 
 {{$NEXT}}
 
+0.09  2016-11-18 20:45:53 PST
+        - Fix HTTP/2 where it appears in redirects (skaji) #5
+
 0.08  2016-11-18 09:09:04 PST
         - Accept HTTP/2 when curl is compiled with http2 support (skaji) #4
 

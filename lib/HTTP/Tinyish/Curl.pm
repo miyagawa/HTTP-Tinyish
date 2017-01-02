@@ -47,7 +47,7 @@ sub request {
     my($self, $method, $url, $opts) = @_;
     $opts ||= {};
 
-    my(undef, $temp) = File::Temp::tempfile;
+    my(undef, $temp) = File::Temp::tempfile(UNLINK => 1);
 
     my($output, $error);
     eval {
@@ -74,7 +74,7 @@ sub mirror {
     my($self, $url, $file, $opts) = @_;
     $opts ||= {};
 
-    my(undef, $temp) = File::Temp::tempfile;
+    my(undef, $temp) = File::Temp::tempfile(UNLINK => 1);
 
     my $output;
     eval {

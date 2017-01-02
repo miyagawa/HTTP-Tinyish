@@ -2,6 +2,9 @@ Revision history for HTTP-Tinyish
 
 {{$NEXT}}
 
+0.10  2017-01-02 14:02:54 PST
+        - remove tempfiles created by curl backend (skaji) #6
+
 0.09  2016-11-18 20:45:53 PST
         - Fix HTTP/2 where it appears in redirects (skaji) #5
 

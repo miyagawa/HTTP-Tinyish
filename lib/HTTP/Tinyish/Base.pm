@@ -47,6 +47,7 @@ sub parse_http_header {
     $res->{status} = $status;
     $res->{reason} = $reason;
     $res->{success} = $status =~ /^(?:2|304)/;
+    $res->{protocol} = $proto;
 
     # import headers
     my $token = qr/[^][\x00-\x1f\x7f()<>@,;:\\"\/?={} \t]+/;

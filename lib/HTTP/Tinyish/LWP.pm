@@ -62,12 +62,13 @@ sub request {
     my $res = $self->{ua}->request($req);
 
     return {
-        url     => $url,
-        content => $res->decoded_content(charset => 'none'),
-        success => $res->is_success,
-        status  => $res->code,
-        reason  => $res->message,
-        headers => $self->_headers_to_hashref($res->headers),
+        url      => $url,
+        content  => $res->decoded_content(charset => 'none'),
+        success  => $res->is_success,
+        status   => $res->code,
+        reason   => $res->message,
+        headers  => $self->_headers_to_hashref($res->headers),
+        protocol => $res->protocol,
     };
 }
 
@@ -78,12 +79,13 @@ sub mirror {
     my $res = $self->{ua}->mirror($url, $file);
 
     return {
-        url     => $url,
-        content => $res->decoded_content,
-        success => $res->is_success || $res->code == 304,
-        status  => $res->code,
-        reason  => $res->message,
-        headers => $self->_headers_to_hashref($res->headers),
+        url      => $url,
+        content  => $res->decoded_content,
+        success  => $res->is_success || $res->code == 304,
+        status   => $res->code,
+        reason   => $res->message,
+        headers  => $self->_headers_to_hashref($res->headers),
+        protocol => $res->protocol,
     };
 }
 

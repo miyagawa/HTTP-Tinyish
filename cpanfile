@@ -3,7 +3,7 @@ requires 'perl', '5.008005';
 requires 'parent';
 requires 'File::Which';
 requires 'IPC::Run3';
-requires 'HTTP::Tiny', 0.054;
+requires 'HTTP::Tiny', 0.055;
 
 on test => sub {
     requires 'Test::More', '0.96';

@@ -8,9 +8,7 @@ my %supports = (http => 1);
 sub configure {
     my %meta = ("HTTP::Tiny" => $HTTP::Tiny::VERSION);
 
-    if (eval { HTTP::Tiny::Handle->_assert_ssl; 1 }) {
-        $supports{https} = 1;
-    }
+    $supports{https} = HTTP::Tiny->can_ssl;
 
     \%meta;
 }

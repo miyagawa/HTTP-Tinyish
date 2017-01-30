@@ -18,7 +18,7 @@ my %WriteMakefileArgs = (
   "NAME" => "HTTP::Tinyish",
   "PREREQ_PM" => {
     "File::Which" => 0,
-    "HTTP::Tiny" => "0.054",
+    "HTTP::Tiny" => "0.055",
     "IPC::Run3" => 0,
     "parent" => 0
   },
@@ -26,7 +26,7 @@ my %WriteMakefileArgs = (
     "JSON::PP" => 0,
     "Test::More" => "0.96"
   },
-  "VERSION" => "0.10",
+  "VERSION" => "0.11",
   "test" => {
     "TESTS" => "t/*.t"
   }
@@ -35,7 +35,7 @@ my %WriteMakefileArgs = (
 
 my %FallbackPrereqs = (
   "File::Which" => 0,
-  "HTTP::Tiny" => "0.054",
+  "HTTP::Tiny" => "0.055",
   "IPC::Run3" => 0,
   "JSON::PP" => 0,
   "Test::More" => "0.96",

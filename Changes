@@ -2,6 +2,10 @@ Revision history for HTTP-Tinyish
 
 {{$NEXT}}
 
+0.11  2017-01-29 16:02:35 PST
+        - Add protocol to HTTP::Tinyish->request (skaji) #7
+        - Use HTTP::Tiny->can_ssl to check if SSL is supported (skaji) #8
+
 0.10  2017-01-02 14:02:54 PST
         - remove tempfiles created by curl backend (skaji) #6
 

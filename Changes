@@ -2,6 +2,9 @@ Revision history for HTTP-Tinyish
 
 {{$NEXT}}
 
+0.12  2017-02-11 18:07:14 PST
+        - Relax minimum perl version to 5.8.1 #10
+
 0.11  2017-01-29 16:02:35 PST
         - Add protocol to HTTP::Tinyish->request (skaji) #7
         - Use HTTP::Tiny->can_ssl to check if SSL is supported (skaji) #8

@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-use 5.008005;
+use 5.008001;
 
 use ExtUtils::MakeMaker;
 
@@ -14,7 +14,7 @@ my %WriteMakefileArgs = (
   },
   "DISTNAME" => "HTTP-Tinyish",
   "LICENSE" => "perl",
-  "MIN_PERL_VERSION" => "5.008005",
+  "MIN_PERL_VERSION" => "5.008001",
   "NAME" => "HTTP::Tinyish",
   "PREREQ_PM" => {
     "File::Which" => 0,
@@ -26,7 +26,7 @@ my %WriteMakefileArgs = (
     "JSON::PP" => 0,
     "Test::More" => "0.96"
   },
-  "VERSION" => "0.11",
+  "VERSION" => "0.12",
   "test" => {
     "TESTS" => "t/*.t"
   }

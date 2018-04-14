@@ -89,7 +89,7 @@ sub mirror {
         ], \undef, \$output, \undef;
     };
 
-    if ($@) {
+    if ($@ or $?) {
         return $self->internal_error($url, $@);
     }
 

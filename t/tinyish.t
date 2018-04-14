@@ -49,7 +49,7 @@ for my $backend (@backends) {
     is_deeply decode_json($res->{content})->{form}, { foo => "1", bar => "2" };
 
  SKIP: {
-        skip "HTTP::Tiny's chunked upload is not supported by httpbin.", 1 if $backend =~ /HTTPTiny/;
+        skip "HTTP::Tiny's and LWP's chunked uploads are not supported by httpbin.", 1 if $backend =~ /HTTPTiny|LWP/;
         my @data = ("xyz\n", "xyz");
         $res = HTTP::Tinyish->new(timeout => 1)->post("http://httpbin.org/post", {
             headers => { 'Content-Type' => 'application/octet-stream' },

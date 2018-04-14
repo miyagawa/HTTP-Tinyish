@@ -72,7 +72,10 @@ for my $backend (@backends) {
 
     $res = HTTP::Tinyish->new(default_headers => { "Foo" => "Bar", Dnt => "1" })
       ->get("http://httpbin.org/headers", { headers => { "Foo" => ["Bar", "Baz"] } });
-    is decode_json($res->{content})->{headers}{Foo}, "Bar,Baz";
+ SKIP: {
+        skip "httpbin does not support multiple headers", 1;
+        is decode_json($res->{content})->{headers}{Foo}, "Bar,Baz";
+    }
     is decode_json($res->{content})->{headers}{Dnt}, "1";
 
     my $fn = tempdir(CLEANUP => 1) . "/index.html";

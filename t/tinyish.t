@@ -38,6 +38,10 @@ for my $backend (@backends) {
         like $res->{content}, qr/Comprehensive/i;
     }
 
+    $res = HTTP::Tinyish->new->get("http://example.invalid");
+    is $res->{status}, 599;
+    ok !$res->{success};
+
     $res = HTTP::Tinyish->new->head("http://httpbin.org/headers");
     is $res->{status}, 200;
 
@@ -89,6 +93,11 @@ for my $backend (@backends) {
         is $res->{status}, 304;
         ok $res->{success};
     }
+
+    my $fn = tempdir(CLEANUP => 1) . "/index.html";
+    $res = HTTP::Tinyish->new->mirror("http://example.invalid", $fn);
+    is $res->{status}, 599;
+    ok !$res->{success};
 
     $res = HTTP::Tinyish->new(agent => "Menlo/1")->get("http://httpbin.org/user-agent");
     is_deeply decode_json($res->{content}), { 'user-agent' => "Menlo/1" };

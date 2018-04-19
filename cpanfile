@@ -4,6 +4,7 @@ requires 'parent';
 requires 'File::Which';
 requires 'IPC::Run3';
 requires 'HTTP::Tiny', 0.055;
+requires 'LWP::UserAgent';
 
 on test => sub {
     requires 'Test::More', '0.96';
@@ -16,4 +17,3 @@ on develop => sub {
     requires 'IO::Socket::SSL', 1.42;
     requires 'Net::SSLeay', 1.49;
 };
-

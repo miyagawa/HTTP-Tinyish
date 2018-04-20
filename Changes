@@ -2,6 +2,9 @@ Revision history for HTTP-Tinyish
 
 {{$NEXT}}
 
+0.14  2018-04-20 10:48:38 CEST
+        - Make CPAN testers look better
+
 0.13  2018-04-19 11:50:57 CEST
         - Handle errors from Curl's mirror method (skaji)
         - Convert LWP's 'internal response' to an internal error

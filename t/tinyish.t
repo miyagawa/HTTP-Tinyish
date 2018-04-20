@@ -4,8 +4,11 @@ use HTTP::Tinyish;
 use File::Temp qw(tempdir);
 use JSON::PP qw(decode_json);
 
-plan skip_all => "skip network tests"
-  unless $ENV{LIVE_TEST} or -e ".git";
+unless ($ENV{LIVE_TEST} or -e ".git") {
+    pass "skip network testing";
+    done_testing;
+    exit;
+}
 
 sub read_file {
     open my $fh, "<", shift;

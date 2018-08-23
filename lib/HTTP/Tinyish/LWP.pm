@@ -12,7 +12,7 @@ sub configure {
         LWP => $LWP::VERSION,
     );
 
-    if (eval { (require LWP::Protocol::https; 1 ) && ( require Mozilla::CA; 1 )}) {
+    if (eval { require LWP::Protocol::https; require Mozilla::CA; 1 }) {
         $supports{https} = 1;
         $meta{"LWP::Protocol::https"} = $LWP::Protocol::https::VERSION;
     }

@@ -2,6 +2,9 @@ Revision history for HTTP-Tinyish
 
 {{$NEXT}}
 
+0.15  2018-09-22 13:40:30 PDT
+        - in LWP adapter, check if Mozilla::CA is installed as well #15
+
 0.14  2018-04-20 10:48:38 CEST
         - Make CPAN testers look better
 

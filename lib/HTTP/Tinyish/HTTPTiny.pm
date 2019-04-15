@@ -2,6 +2,7 @@ package HTTP::Tinyish::HTTPTiny;
 use strict;
 use parent qw(HTTP::Tinyish::Base);
 use HTTP::Tiny;
+use Net::INET6Glue;
 
 my %supports = (http => 1);
 

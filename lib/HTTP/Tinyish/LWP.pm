@@ -4,6 +4,7 @@ use parent qw(HTTP::Tinyish::Base);
 
 use LWP 5.802;
 use LWP::UserAgent;
+use Net::INET6Glue;
 
 my %supports = (http => 1);
 
@@ -28,7 +29,7 @@ sub new {
     my($class, %attr) = @_;
 
     my $ua = LWP::UserAgent->new;
-    
+
     bless {
         ua => $class->translate_lwp($ua, %attr),
     }, $class;

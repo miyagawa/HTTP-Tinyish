@@ -4,7 +4,7 @@ use parent qw(HTTP::Tinyish::Base);
 
 use LWP 5.802;
 use LWP::UserAgent;
-use Net::INET6Glue;
+use Net::INET6Glue::INET_is_INET6;
 
 my %supports = (http => 1);
 

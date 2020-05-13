@@ -22,7 +22,12 @@ my @backends = $ENV{TEST_BACKEND}
 for my $backend (@backends) {
     $HTTP::Tinyish::PreferredBackend = $backend;
     my $config = HTTP::Tinyish->configure_backend($backend);
-    next unless $config && $backend->supports('http');
+    my $can_test_backend = $config && $backend->supports('http');
+    SKIP: {
+        skip "Testing backend $backend", 1 unless $can_test_backend;
+        pass "Testing backend $backend";
+    }
+    next unless $can_test_backend;
 
     diag "Testing with $backend";
 
@@ -97,7 +102,7 @@ for my $backend (@backends) {
         ok $res->{success};
     }
 
-    my $fn = tempdir(CLEANUP => 1) . "/index.html";
+    $fn = tempdir(CLEANUP => 1) . "/index.html";
     $res = HTTP::Tinyish->new->mirror("http://example.invalid", $fn);
     is $res->{status}, 599;
     ok !$res->{success};

@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use Carp ();
 
-our $VERSION = '0.15';
+our $VERSION = '0.16';
 
 our $PreferredBackend; # for tests
 our @Backends = map "HTTP::Tinyish::$_", qw( LWP HTTPTiny Curl Wget );

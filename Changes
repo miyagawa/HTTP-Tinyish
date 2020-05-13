@@ -2,6 +2,9 @@ Revision history for HTTP-Tinyish
 
 {{$NEXT}}
 
+0.16  2020-05-13 10:11:24 PDT
+        - Support patch() method #20
+
 0.15  2018-09-22 13:40:30 PDT
         - in LWP adapter, check if Mozilla::CA is installed as well #15
 

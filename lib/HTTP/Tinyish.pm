@@ -14,7 +14,7 @@ sub new {
     bless \%attr, $class;
 }
 
-for my $method (qw/get head put post delete mirror/) {
+for my $method (qw/get head put post delete mirror patch/) {
     no strict 'refs';
     eval <<"HERE";
     sub $method {
@@ -114,7 +114,7 @@ modules, it is possible that:
 =head1 COMPATIBILITIES
 
 All request related methods such as C<get>, C<post>, C<put>,
-C<delete>, C<request> and C<mirror> are supported.
+C<delete>, C<request>, C<patch> and C<mirror> are supported.
 
 =head2 LWP
 

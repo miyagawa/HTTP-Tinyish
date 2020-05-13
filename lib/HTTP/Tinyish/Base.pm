@@ -2,7 +2,7 @@ package HTTP::Tinyish::Base;
 use strict;
 use warnings;
 
-for my $sub_name ( qw/get head put post delete/ ) {
+for my $sub_name ( qw/get head put post delete patch/ ) {
     my $req_method = uc $sub_name;
     eval <<"HERE";
     sub $sub_name {

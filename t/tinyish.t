@@ -55,6 +55,14 @@ for my $backend (@backends) {
     is $res->{status}, 200;
     is_deeply decode_json($res->{content})->{form}, { foo => "1", bar => "2" };
 
+    # patch
+    $res = HTTP::Tinyish->new->patch("http://httpbin.org/patch", {
+        headers => { 'Content-Type' => 'application/x-www-form-urlencoded' },
+        content => "foo=1&bar=2",
+    });
+    is $res->{status}, 200;
+    is_deeply decode_json($res->{content})->{form}, { foo => "1", bar => "2" };
+
  SKIP: {
         skip "HTTP::Tiny's and LWP's chunked uploads are not supported by httpbin.", 1 if $backend =~ /HTTPTiny|LWP/;
         my @data = ("xyz\n", "xyz");

@@ -44,7 +44,7 @@ modules, it is possible that:
 # COMPATIBILITIES
 
 All request related methods such as `get`, `post`, `put`,
-`delete`, `request` and `mirror` are supported.
+`delete`, `request`, `patch` and `mirror` are supported.
 
 ## LWP
 

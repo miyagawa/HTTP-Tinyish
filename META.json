@@ -67,7 +67,7 @@
          "web" : "https://github.com/miyagawa/HTTP-Tinyish"
       }
    },
-   "version" : "0.16",
+   "version" : "0.17",
    "x_contributors" : [
       "Nicolas R <cpan@atoomic.org>",
       "Shoichi Kaji <skaji@cpan.org>",

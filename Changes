@@ -2,6 +2,9 @@ Revision history for HTTP-Tinyish
 
 {{$NEXT}}
 
+0.17  2020-07-07 16:55:12 PDT
+        - Support saving error output from curl in internal errors (skaji)
+
 0.16  2020-05-13 10:11:24 PDT
         - Support patch() method #20
 

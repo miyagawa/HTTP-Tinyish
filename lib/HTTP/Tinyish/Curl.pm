@@ -104,6 +104,7 @@ sub build_options {
     my @options = (
         '--location',
         '--silent',
+        '--show-error',
         '--max-time', ($self->{timeout} || 60),
         '--max-redirs', ($self->{max_redirect} || 5),
         '--user-agent', ($self->{agent} || "HTTP-Tinyish/$HTTP::Tinyish::VERSION"),

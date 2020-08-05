@@ -39,6 +39,12 @@ for my $backend (@backends) {
         $res = HTTP::Tinyish->new(verify_SSL => 0)->get("https://cpan.metacpan.org/");
         is $res->{status}, 200;
         like $res->{content}, qr/Comprehensive/i;
+
+        for (qw(expired untrusted-root wrong.host)) {
+            $res = HTTP::Tinyish->new(verify_SSL => 1)->get("https://$_.badssl.com/");
+            is $res->{status}, 599, $_;
+            ok !$res->{success}, $_;
+        }
     }
 
     $res = HTTP::Tinyish->new->get("http://example.invalid");

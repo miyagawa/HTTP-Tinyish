@@ -117,7 +117,7 @@ sub build_options {
         '--server-response',
         '--timeout', ($self->{timeout} || 60),
         '--tries', 1,
-        '--max-redirect', ($self->{max_redirect} || 5),
+        '--max-redirect', (exists $self->{max_redirect} ? $self->{max_redirect} : 5),
         '--user-agent', ($self->{agent} || "HTTP-Tinyish/$HTTP::Tinyish::VERSION"),
     );
 

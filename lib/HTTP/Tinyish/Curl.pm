@@ -102,13 +102,14 @@ sub build_options {
     my($self, $url, $opts) = @_;
 
     my @options = (
-        '--location',
         '--silent',
         '--show-error',
         '--max-time', ($self->{timeout} || 60),
-        '--max-redirs', ($self->{max_redirect} || 5),
         '--user-agent', ($self->{agent} || "HTTP-Tinyish/$HTTP::Tinyish::VERSION"),
     );
+    if (my $max_redirect = exists $self->{max_redirect} ? $self->{max_redirect} : 5) {
+        push @options, '--location', '--max-redirs', $max_redirect;
+    }
 
     my %headers;
     if ($self->{default_headers}) {

@@ -103,7 +103,7 @@ sub translate_lwp {
     $agent->parse_head(0);
     $agent->env_proxy;
     $agent->timeout(delete $attr{timeout} || 60);
-    $agent->max_redirect(delete $attr{max_redirect} || 5);
+    $agent->max_redirect(exists $attr{max_redirect} ? $attr{max_redirect} : 5);
     $agent->agent(delete $attr{agent} || "HTTP-Tinyish/$HTTP::Tinyish::VERSION");
 
     # LWP default is to verify, HTTP::Tiny isn't

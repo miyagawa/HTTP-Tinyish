@@ -98,8 +98,8 @@ CPAN modules without an HTTPS support in built-in HTTP library.
 
 =head1 BACKEND SELECTION
 
-Backends are searched in the order of: C<LWP>, L<HTTP::Tiny>, L<Curl>
-and L<Wget>. HTTP::Tinyish will auto-detect if the backend also
+Backends are searched in the order of: L<LWP>, L<HTTP::Tiny>, C<curl>
+and C<wget>. HTTP::Tinyish will auto-detect if the backend also
 supports HTTPS, and use the appropriate backend based on the given
 URL to the request methods.
 

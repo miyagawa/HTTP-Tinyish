@@ -26,7 +26,7 @@ my %WriteMakefileArgs = (
     "JSON::PP" => 0,
     "Test::More" => "0.96"
   },
-  "VERSION" => "0.18",
+  "VERSION" => "0.19",
   "test" => {
     "TESTS" => "t/*.t"
   }

@@ -1,6 +1,8 @@
 Revision history for HTTP-Tinyish
 
 {{$NEXT}}
+
+0.19  2024-03-08 14:30:05 PST
         - Specify :raw for IPC::Run3 to force binary on Windows #24
 
 0.18  2022-06-20 16:44:43 PDT

@@ -95,7 +95,16 @@ sub mirror {
     # This doesn't send If-Modified-Since because -O and -N are mutually exclusive :(
     my($stdout, $stderr);
     eval {
-        run3 [$wget, $self->build_options("GET", $url, $opts), $url, '-O', $file], \undef, \$stdout, \$stderr;
+        run3 [
+            $wget,
+            $self->build_options("GET", $url, $opts),
+            $url,
+            '-O', $file,
+        ], \undef, \$stdout, \$stderr,
+        {
+            binmode_stdout => ":raw",
+            binmode_stderr => ":raw",
+        };
     };
 
     if ($@ or $?) {

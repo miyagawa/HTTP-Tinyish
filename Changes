@@ -1,6 +1,7 @@
 Revision history for HTTP-Tinyish
 
 {{$NEXT}}
+        - Specify :raw for IPC::Run3 to force binary on Windows #24
 
 0.18  2022-06-20 16:44:43 PDT
         - Support max_redirect: 0 (skaji) #23

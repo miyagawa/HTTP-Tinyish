@@ -15,5 +15,6 @@ on develop => sub {
     requires 'LWP::Protocol::https', 6;
     requires 'IO::Socket::SSL', 1.42;
     requires 'Net::SSLeay', 1.49;
+    requires 'Mozilla::CA';
 };
 

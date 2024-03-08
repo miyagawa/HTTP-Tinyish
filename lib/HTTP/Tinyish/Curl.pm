@@ -58,7 +58,11 @@ sub request {
             $self->build_options($url, $opts),
             '--dump-header', $temp,
             $url,
-        ], \undef, \$output, \$error;
+        ], \undef, \$output, \$error,
+        {
+            binmode_stdout => ":raw",
+            binmode_stderr => ":raw",
+        };
     };
 
     if ($@ or $?) {
@@ -86,7 +90,11 @@ sub mirror {
             '--dump-header', $temp,
             '--remote-time',
             $url,
-        ], \undef, \$output, \$error;
+        ], \undef, \$output, \$error,
+        {
+            binmode_stdout => ":raw",
+            binmode_stderr => ":raw",
+        };
     };
 
     if ($@ or $?) {

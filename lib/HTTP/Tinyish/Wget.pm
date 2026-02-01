@@ -37,6 +37,8 @@ sub configure {
             $supports{http} = 1;
         } elsif ($err && $err =~ /Invalid host/) {
             $supports{http} = $supports{https} = 1;
+        } elsif ($err && $err =~ /wget: unrecognized option '(.*?)'/) {
+            die "This wget ($wget) is too old and doesn't support $1";
         }
 
         (undef, $err) = _run_wget('--method', 'GET', 'http://');

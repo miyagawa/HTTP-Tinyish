@@ -24,7 +24,12 @@ sub configure {
     eval {
         local $ENV{LC_ALL} = 'en_US';
 
-        $meta{$wget} = _run_wget('--version');
+        my ($out, $err) = _run_wget('--version');
+        if ($err =~ /(BusyBox .* multi-call binary.*)/) {
+            $meta{$wget} = $1;
+            die "BusyBox wget is not supported. $meta{wget}";
+        }
+        $meta{$wget} = $out;
         unless ($meta{$wget} =~ /GNU Wget 1\.(\d+)/ and $1 >= 12) {
             die "Wget version is too old. $meta{$wget}";
         }

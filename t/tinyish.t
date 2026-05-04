@@ -115,6 +115,15 @@ for my $backend (@backends) {
     $res = HTTP::Tinyish->new->mirror("http://example.invalid", $fn);
     is $res->{status}, 599;
     ok !$res->{success};
+    ok !-e $fn, "$backend: no file created on network error";
+
+    {
+        my $fn = tempdir(CLEANUP => 1) . "/error.html";
+        $res = HTTP::Tinyish->new->mirror("http://httpbin.org/status/404", $fn);
+        is $res->{status}, 404;
+        ok !$res->{success};
+        ok !-e $fn, "$backend: no file created on HTTP 404";
+    }
 
     $res = HTTP::Tinyish->new(agent => "Menlo/1")->get("http://httpbin.org/user-agent");
     is_deeply decode_json($res->{content}), { 'user-agent' => "Menlo/1" };

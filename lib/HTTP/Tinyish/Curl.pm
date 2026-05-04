@@ -79,6 +79,7 @@ sub mirror {
     $opts ||= {};
 
     my(undef, $temp) = File::Temp::tempfile(UNLINK => 1);
+    my $tempfile = $file . int(rand(2**31));
 
     my($output, $error);
     eval {
@@ -86,7 +87,7 @@ sub mirror {
             $curl,
             $self->build_options($url, $opts),
             '-z', $file,
-            '-o', $file,
+            '-o', $tempfile,
             '--dump-header', $temp,
             '--remote-time',
             $url,
@@ -98,11 +99,18 @@ sub mirror {
     };
 
     if ($@ or $?) {
+        unlink $tempfile;
         return $self->internal_error($url, $@ || $error);
     }
 
     my $res = { url => $url, content => $output };
     $self->parse_http_header( _slurp($temp), $res );
+
+    if ($res->{status} eq '200') {
+        rename $tempfile, $file
+            or die "Error replacing $file with $tempfile: $!\n";
+    }
+    unlink $tempfile;
     $res;
 }
 

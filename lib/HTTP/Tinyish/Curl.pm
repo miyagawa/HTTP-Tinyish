@@ -98,6 +98,9 @@ sub mirror {
     };
 
     if ($@ or $?) {
+        if ( -e $file ) {
+          unlink $file;
+        }
         return $self->internal_error($url, $@ || $error);
     }
 
